@@ -14,6 +14,8 @@
 - Switch to OpenVPN/OpenSSL certificate management
 - Arab translation
 
+- JSON version checking reintroduced
+
 
 ## [1.0.29](https://github.com/Amebis/eduVPN/compare/1.0.28...1.0.29) (2020-06-22)
 
