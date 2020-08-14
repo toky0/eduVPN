@@ -15,6 +15,7 @@
 - Arab translation
 
 - JSON version checking reintroduced
+- Discontinue eduVPN 1.x Ed25519 signatures
 
 
 ## [1.0.29](https://github.com/Amebis/eduVPN/compare/1.0.28...1.0.29) (2020-06-22)
