@@ -64,10 +64,10 @@ namespace eduVPN.Xml
             while (reader.Read() &&
                 !(reader.NodeType == XmlNodeType.EndElement && reader.LocalName == GetType().Name))
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.Name == "MinisignPublicKey")
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "PublicKey")
                 {
                     while (reader.Read() &&
-                        !(reader.NodeType == XmlNodeType.EndElement && reader.LocalName == "MinisignPublicKey"))
+                        !(reader.NodeType == XmlNodeType.EndElement && reader.LocalName == "PublicKey"))
                     {
                         if (reader.NodeType == XmlNodeType.Text)
                         {
@@ -97,7 +97,7 @@ namespace eduVPN.Xml
         {
             foreach (var el in this)
             {
-                writer.WriteStartElement("MinisignPublicKey");
+                writer.WriteStartElement("PublicKey");
                 using (var s = new MemoryStream(42))
                 {
                     using (var w = new BinaryWriter(s))
