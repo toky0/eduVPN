@@ -8,6 +8,7 @@
 
 namespace eduVPN.Models
 {
+    // TODO: Rename "InstanceSourceType" to "ServerType"
     /// <summary>
     /// Instance source type
     /// </summary>

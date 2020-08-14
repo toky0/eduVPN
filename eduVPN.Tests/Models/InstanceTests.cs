@@ -12,54 +12,79 @@ using System.Collections.Generic;
 namespace eduVPN.Models.Tests
 {
     [TestClass()]
-    public class InstanceInfoTests
+    public class InstanceTests
     {
         [TestMethod()]
-        public void InstanceInfoTest()
+        public void InstanceTest()
         {
-            Instance inst;
+            Instance srv;
 
-            inst = new Instance();
-            inst.Load(new Dictionary<string, object>
+            srv = new Instance();
+            srv.Load(new Dictionary<string, object>
                 {
-                    { "base_uri", "https://surf.eduvpn.nl/" }
+                    { "server_type", "institute_access" },
+                    { "base_url", "https://surf.eduvpn.nl/" }
                 });
-            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), inst.Base, "Base URI incorrect");
-            Assert.AreEqual("surf.eduvpn.nl", inst.DisplayName, "Display name incorrect");
-            Assert.AreEqual(null, inst.Logo, "Logo URI incorrect");
+            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), srv.Base, "Base URI incorrect");
+            Assert.AreEqual("surf.eduvpn.nl", srv.DisplayName, "Display name incorrect");
 
-            inst = new Instance();
-            inst.Load(new Dictionary<string, object>
+            srv = new Instance();
+            srv.Load(new Dictionary<string, object>
                 {
-                    { "base_uri", "https://surf.eduvpn.nl/" },
+                    { "server_type", "institute_access" },
+                    { "base_url", "https://surf.eduvpn.nl/" },
                     { "display_name", "SURF" }
                 });
-            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), inst.Base, "Base URI incorrect");
-            Assert.AreEqual("SURF", inst.DisplayName, "Display name incorrect");
-            Assert.AreEqual(null, inst.Logo, "Logo URI incorrect");
+            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), srv.Base, "Base URI incorrect");
+            Assert.AreEqual("SURF", srv.DisplayName, "Display name incorrect");
 
-            inst = new Instance();
-            inst.Load(new Dictionary<string, object>
+            srv = new Instance();
+            srv.Load(new Dictionary<string, object>
                 {
-                    { "base_uri", "https://surf.eduvpn.nl/" },
-                    { "display_name", "SURF" },
-                    { "logo", "https://static.eduvpn.nl/img/surfnet.png" }
+                    { "server_type", "secure_internet" },
+                    { "base_url", "https://surf.eduvpn.nl/" },
+                    { "country_code", "NL" },
+                    { "support_contact", new List<object>(){ "mailto:info@surf.nl" } },
                 });
-            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), inst.Base, "Base URI incorrect");
-            Assert.AreEqual("SURF", inst.DisplayName, "Display name incorrect");
-            Assert.AreEqual(new Uri("https://static.eduvpn.nl/img/surfnet.png"), inst.Logo, "Logo URI incorrect");
+            Assert.AreEqual(new Uri("https://surf.eduvpn.nl/"), srv.Base, "Base URI incorrect");
+            Assert.AreEqual("surf.eduvpn.nl", srv.DisplayName, "Display name incorrect");
+            Assert.AreEqual("NL", srv.Country.Code, "Country code incorrect");
 
             // Test issues.
             try
             {
-                inst = new Instance();
-                inst.Load(new Dictionary<string, object>
+                srv = new Instance();
+                srv.Load(new Dictionary<string, object>
                     {
+                        { "base_url", "https://surf.eduvpn.nl/" },
                         { "display_name", "SURF" },
-                        { "logo", "https://static.eduvpn.nl/img/surfnet.png" }
+                    });
+                Assert.Fail("Missing server type tolerated");
+            } catch (eduJSON.MissingParameterException) {}
+
+            try
+            {
+                srv = new Instance();
+                srv.Load(new Dictionary<string, object>
+                    {
+                        { "server_type", "foo bar" },
+                        { "base_url", "https://surf.eduvpn.nl/" },
+                        { "display_name", "SURF" },
+                    });
+                Assert.Fail("Invalid server type tolerated");
+            } catch (ArgumentOutOfRangeException) {}
+
+            try
+            {
+                srv = new Instance();
+                srv.Load(new Dictionary<string, object>
+                    {
+                        { "server_type", "secure_internet" },
+                        { "display_name", "SURF" },
                     });
                 Assert.Fail("Missing base URL tolerated");
-            } catch (eduJSON.MissingParameterException) {}
+            }
+            catch (eduJSON.MissingParameterException) { }
         }
     }
 }

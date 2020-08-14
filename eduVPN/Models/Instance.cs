@@ -21,6 +21,7 @@ using System.Web;
 
 namespace eduVPN.Models
 {
+    // TODO: Rename "Instance" to "Server".
     /// <summary>
     /// An eduVPN instance (VPN service provider)
     /// </summary>
@@ -65,6 +66,18 @@ namespace eduVPN.Models
         #region Properties
 
         /// <summary>
+        /// Instance type
+        /// </summary>
+        public InstanceSourceType Type
+        {
+            get { return _type; }
+            set { SetProperty(ref _type, value); }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private InstanceSourceType _type;
+
+        /// <summary>
         /// Instance base URI
         /// </summary>
         public Uri Base
@@ -98,8 +111,32 @@ namespace eduVPN.Models
         private string _display_name;
 
         /// <summary>
+        /// Instance country
+        /// </summary>
+        public Country Country
+        {
+            get { return _country; }
+            set { SetProperty(ref _country, value); }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Country _country;
+
+        /// <summary>
+        /// List of support contact URLs
+        /// </summary>
+        public ObservableCollection<Uri> SupportContact
+        {
+            get { return _support_contact; }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ObservableCollection<Uri> _support_contact = new ObservableCollection<Uri>();
+
+        /// <summary>
         /// Instance logo URI
         /// </summary>
+        [Obsolete]
         public Uri Logo
         {
             get { return _logo; }
@@ -218,7 +255,7 @@ namespace eduVPN.Models
                 return false;
 
             var other = obj as Instance;
-            if (!Base.Equals(other.Base))
+            if (!_base.Equals(other._base))
                 return false;
 
             return true;
@@ -521,21 +558,43 @@ namespace eduVPN.Models
         /// <summary>
         /// Loads instance from a dictionary object (provided by JSON)
         /// </summary>
-        /// <param name="obj">Key/value dictionary with <c>base_uri</c>, <c>logo</c> and <c>display_name</c> elements. <c>base_uri</c> is required. All elements should be strings.</param>
+        /// <param name="obj">Key/value dictionary with <c>server_type</c>, <c>base_url</c>, <c>display_name</c>, <c>country_code</c> and <c>support_contact</c> elements.</param>
         /// <exception cref="eduJSON.InvalidParameterTypeException"><paramref name="obj"/> type is not <c>Dictionary&lt;string, object&gt;</c></exception>
         public void Load(object obj)
         {
             if (!(obj is Dictionary<string, object> obj2))
                 throw new eduJSON.InvalidParameterTypeException(nameof(obj), typeof(Dictionary<string, object>), obj.GetType());
 
-            // Set base URI.
-            Base = new Uri(eduJSON.Parser.GetValue<string>(obj2, "base_uri"));
+            // Set server type.
+            if (!eduJSON.Parser.GetValue(obj2, "server_type", out string server_type))
+                throw new eduJSON.MissingParameterException("server_type");
+            switch (server_type.ToLower())
+            {
+                case "institute_access": Type = InstanceSourceType.InstituteAccess; break;
+                case "secure_internet": Type = InstanceSourceType.SecureInternet; break;
+                default: throw new ArgumentOutOfRangeException("server_type");
+            }
+
+            // Set base URL.
+            Base = new Uri(eduJSON.Parser.GetValue<string>(obj2, "base_url"));
+
+            // Set country.
+            Country = eduJSON.Parser.GetValue(obj2, "country_code", out string country_code) ? new Country(country_code) : null;
 
             // Set display name.
-            DisplayName = eduJSON.Parser.GetLocalizedValue(obj2, "display_name", out string display_name) ? display_name : Base.Host;
+            DisplayName =
+                eduJSON.Parser.GetLocalizedValue(obj2, "display_name", out string display_name) ? display_name :
+                Type == InstanceSourceType.SecureInternet && Country != null ? Country.ToString() :
+                Base.Host;
 
-            // Set logo URI.
-            Logo = eduJSON.Parser.GetLocalizedValue(obj2, "logo", out string logo_uri) ? new Uri(logo_uri) : null;
+            // Set support contact URLs.
+            SupportContact.Clear();
+            if (eduJSON.Parser.GetValue(obj2, "support_contact", out List<object> support_contact))
+            {
+                foreach (var c in support_contact)
+                    if (c is string c_str)
+                        SupportContact.Add(new Uri(c_str));
+            }
         }
 
         #endregion
