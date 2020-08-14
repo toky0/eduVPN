@@ -50,6 +50,24 @@ namespace eduVPN.Properties
         }
 
         /// <summary>
+        /// Server list discovery URL
+        /// </summary>
+        [ApplicationScopedSetting()]
+        public Xml.ResourceRef ServerListDiscovery
+        {
+            get { return GetResourceRef("ServerListDiscovery"); }
+        }
+
+        /// <summary>
+        /// Organization list discovery URL
+        /// </summary>
+        [ApplicationScopedSetting()]
+        public Xml.ResourceRef OrganizationListDiscovery
+        {
+            get { return GetResourceRef("OrganizationListDiscovery"); }
+        }
+
+        /// <summary>
         /// Secure Internet discovery URL
         /// </summary>
         [ApplicationScopedSetting()]
