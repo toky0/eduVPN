@@ -35,66 +35,13 @@ namespace eduVPN.Properties
         #region Properties
 
         /// <summary>
-        /// TAP interface name
+        /// Returns resource URI from settings
         /// </summary>
-        [UserScopedSetting()]
-        [DefaultSettingValue("")]
-        [Obsolete("Please use OpenVPNInterfaceID instead")]
-        [NoSettingsVersionUpgrade]
-        public string OpenVPNInterface
-        {
-            get { throw new NotSupportedException("OpenVPNInterface is obsolete"); }
-            set { throw new NotSupportedException("OpenVPNInterface is obsolete"); }
-        }
-
-        /// <summary>
-        /// Secure internet configuration history
-        /// </summary>
-        [UserScopedSetting()]
-        [DefaultSettingValue("")]
-        [Obsolete("Please use SecureInternetInstanceSourceInfo instead")]
-        [NoSettingsVersionUpgrade]
-        public Xml.VPNConfigurationSettingsList SecureInternetConfigHistory
-        {
-            get { throw new NotSupportedException("SecureInternetConfigHistory is obsolete"); }
-            set { throw new NotSupportedException("SecureInternetConfigHistory is obsolete"); }
-        }
-
-        /// <summary>
-        /// Institute access configuration history
-        /// </summary>
-        [UserScopedSetting()]
-        [DefaultSettingValue("")]
-        [Obsolete("Please use InstituteAccessInstanceSourceInfo instead")]
-        [NoSettingsVersionUpgrade]
-        public Xml.VPNConfigurationSettingsList InstituteAccessConfigHistory
-        {
-            get { throw new NotSupportedException("InstituteAccessConfigHistory is obsolete"); }
-            set { throw new NotSupportedException("InstituteAccessConfigHistory is obsolete"); }
-        }
-
-        /// <summary>
-        /// Access token cache
-        /// </summary>
-        [UserScopedSetting()]
-        [DefaultSettingValue("<SerializableStringDictionary />")]
-        [Obsolete("Please use AccessTokenCache instead")]
-        [NoSettingsVersionUpgrade]
-        public Xml.SerializableStringDictionary AccessTokens
-        {
-            get { throw new NotSupportedException("AccessTokens is obsolete"); }
-            set { throw new NotSupportedException("AccessTokens is obsolete"); }
-        }
-
-        /// <summary>
-        /// Returns URI-Public keys-touple from settings
-        /// </summary>
-        /// <param name="key">The base name of the setting</param>
+        /// <param name="key">The name of the setting</param>
         /// <returns>URI-Public keys-touple</returns>
-        /// <remarks>When <paramref name="key"/> + "Descr" is not defined, the value is obtained from <paramref name="key"/> and <paramref name="key"/> + "PubKey", which also provide the default fallback values.</remarks>
         public Xml.ResourceRef GetResourceRef(string key)
         {
-            return this[key + "Descr"] is Xml.ResourceRef res ?
+            return this[key] is Xml.ResourceRef res ?
                 res :
                 new Xml.ResourceRef()
                 {
@@ -105,103 +52,30 @@ namespace eduVPN.Properties
         /// <summary>
         /// Secure Internet discovery URL
         /// </summary>
-        /// <remarks>When not defined, the value is obtained from <see cref="SecureInternetDiscovery"/> and <see cref="SecureInternetDiscoveryPubKey"/>, which also provide the default fallback values.</remarks>
         [ApplicationScopedSetting()]
         public Xml.ResourceRef SecureInternetDiscoveryDescr
         {
-            get { return GetResourceRef("SecureInternetDiscovery"); }
-        }
-
-        /// <summary>
-        /// Secure Internet discovery URL
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [SpecialSetting(SpecialSetting.WebServiceUrl)]
-        [DefaultSettingValue("https://static.eduvpn.nl/disco/secure_internet.json")]
-        [Obsolete("Please use SecureInternetDiscoveryDescr instead")]
-        public string SecureInternetDiscovery
-        {
-            get { return ((string)(this["SecureInternetDiscovery"])); }
-        }
-
-        /// <summary>
-        /// Secure Internet discovery Ed25519 public key
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [DefaultSettingValue("E5On0JTtyUVZmcWd+I/FXRm32nSq8R2ioyW7dcu/U88=")]
-        [Obsolete("Please use SecureInternetDiscoveryDescr instead")]
-        public string SecureInternetDiscoveryPubKey
-        {
-            get { return ((string)(this["SecureInternetDiscoveryPubKey"])); }
+            get { return GetResourceRef("SecureInternetDiscoveryDescr"); }
         }
 
         /// <summary>
         /// Institute Access discovery URL
         /// </summary>
-        /// <remarks>When not defined, the value is obtained from <see cref="InstituteAccessDiscovery"/> and <see cref="InstituteAccessDiscoveryPubKey"/>, which also provide the default fallback values.</remarks>
         [ApplicationScopedSetting()]
         public Xml.ResourceRef InstituteAccessDiscoveryDescr
         {
-            get { return GetResourceRef("InstituteAccessDiscovery"); }
-        }
-
-        /// <summary>
-        /// Institute Access discovery URL
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [SpecialSetting(SpecialSetting.WebServiceUrl)]
-        [DefaultSettingValue("https://static.eduvpn.nl/disco/institute_access.json")]
-        [Obsolete("Please use InstituteAccessDiscoveryDescr instead")]
-        public string InstituteAccessDiscovery
-        {
-            get { return ((string)(this["InstituteAccessDiscovery"])); }
-        }
-
-        /// <summary>
-        /// Institute Access discovery Ed25519 public key
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [DefaultSettingValue("E5On0JTtyUVZmcWd+I/FXRm32nSq8R2ioyW7dcu/U88=")]
-        [Obsolete("Please use InstituteAccessDiscoveryDescr instead")]
-        public string InstituteAccessDiscoveryPubKey
-        {
-            get { return ((string)(this["InstituteAccessDiscoveryPubKey"])); }
+            get { return GetResourceRef("InstituteAccessDiscoveryDescr"); }
         }
 
         /// <summary>
         /// Self-updating discovery URL
         /// </summary>
-        /// <remarks>When not defined, the value is obtained from <see cref="SelfUpdate"/> and <see cref="SelfUpdatePubKey"/>, which also provide the default fallback values.</remarks>
         [ApplicationScopedSetting()]
         public Xml.ResourceRef SelfUpdateDescr
         {
-            get { return GetResourceRef("SelfUpdate"); }
+            get { return GetResourceRef("SelfUpdateDescr"); }
         }
 
-        /// <summary>
-        /// Self-updating discovery URL
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [SpecialSetting(SpecialSetting.WebServiceUrl)]
-        [DefaultSettingValue("https://static.eduvpn.nl/auto-update/windows.json")]
-        [Obsolete("Please use SelfUpdateDescr instead")]
-        public string SelfUpdate
-        {
-            get { return ((string)(this["SelfUpdate"])); }
-        }
-
-        /// <summary>
-        /// Self-updating discovery Ed25519 public key
-        /// </summary>
-        [ApplicationScopedSetting()]
-        [DefaultSettingValue("15nh06ilJd5f9hbH5rWGgU+qw9IxBHE+j2wVKshidkA=")]
-        [Obsolete("Please use SelfUpdateDescr instead")]
-        public string SelfUpdatePubKey
-        {
-            get { return ((string)(this["SelfUpdatePubKey"])); }
-        }
-
-        /// <summary>
         /// GUID of the installer EXE bundle
         /// </summary>
         [ApplicationScopedSetting()]

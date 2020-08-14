@@ -716,7 +716,7 @@ namespace eduVPN.ViewModels.Windows
                         try
                         {
                             // Get instance source.
-                            var source = Properties.Settings.Default.GetResourceRef(Properties.Settings.InstanceDirectoryId[source_index] + "Discovery");
+                            var source = Properties.Settings.Default.GetResourceRef(Properties.Settings.InstanceDirectoryId[source_index] + "DiscoveryDescr");
                             if (source.Uri != null)
                             {
                                 var obj_web = Properties.Settings.Default.ResponseCache.GetSeq(source, Abort.Token);
