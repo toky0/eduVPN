@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace eduVPN.Models.Tests
 {
+    [Obsolete]
     [TestClass()]
     public class InstanceSourceInfoTests
     {

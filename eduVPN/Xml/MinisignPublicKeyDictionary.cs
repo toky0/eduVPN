@@ -39,6 +39,32 @@ namespace eduVPN.Xml
 
         #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// Adds a public key
+        /// </summary>
+        /// <param name="public_key">Base64 encoded public key to add</param>
+        public void Add(string public_key)
+        {
+            ulong key_id;
+            var key = new byte[32];
+            using (var s = new MemoryStream(Convert.FromBase64String(public_key), false))
+            using (var r = new BinaryReader(s))
+            {
+                if (r.ReadChar() != 'E' || r.ReadChar() != 'd')
+                    throw new ArgumentException(Resources.Strings.ErrorUnsupportedMinisignPublicKey);
+                key_id = r.ReadUInt64();
+                if (r.Read(key, 0, 32) != 32)
+                    throw new ArgumentException(Resources.Strings.ErrorInvalidMinisignPublicKey);
+            }
+            if (ContainsKey(key_id))
+                throw new ArgumentException(String.Format(Resources.Strings.ErrorDuplicateMinisignPublicKey, key_id));
+            Add(key_id, key);
+        }
+
+        #endregion
+
         #region IXmlSerializable Support
 
         /// <summary>
@@ -59,8 +85,6 @@ namespace eduVPN.Xml
             if (reader.IsEmptyElement)
                 return;
 
-            ulong key_id;
-            var key = new byte[32];
             while (reader.Read() &&
                 !(reader.NodeType == XmlNodeType.EndElement && reader.LocalName == GetType().Name))
             {
@@ -68,23 +92,8 @@ namespace eduVPN.Xml
                 {
                     while (reader.Read() &&
                         !(reader.NodeType == XmlNodeType.EndElement && reader.LocalName == "PublicKey"))
-                    {
                         if (reader.NodeType == XmlNodeType.Text)
-                        {
-                            using (var s = new MemoryStream(Convert.FromBase64String(reader.Value), false))
-                            using (var r = new BinaryReader(s))
-                            {
-                                if (r.ReadChar() != 'E' || r.ReadChar() != 'd')
-                                    throw new ArgumentException(Resources.Strings.ErrorUnsupportedMinisignPublicKey);
-                                key_id = r.ReadUInt64();
-                                if (r.Read(key, 0, 32) != 32)
-                                    throw new ArgumentException(Resources.Strings.ErrorInvalidMinisignPublicKey);
-                            }
-                            if (ContainsKey(key_id))
-                                throw new ArgumentException(String.Format(Resources.Strings.ErrorDuplicateMinisignPublicKey, key_id));
-                            Add(key_id, key);
-                        }
-                    }
+                            Add(reader.Value);
                 }
             }
         }
