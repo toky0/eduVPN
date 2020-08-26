@@ -55,7 +55,7 @@ namespace eduVPN.Models.Tests
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)0x0C00;
             var source = new ResourceRef()
             {
-                Uri = new Uri("https://disco.eduvpn.org/server_list.json"),
+                Uri = new Uri("https://disco.eduvpn.org/v2/server_list.json"),
                 PublicKeys = new MinisignPublicKeyDictionary()
             };
             source.PublicKeys.Add("RWRtBSX1alxyGX+Xn3LuZnWUT0w//B6EmTJvgaAxBMYzlQeI+jdrO6KF");
